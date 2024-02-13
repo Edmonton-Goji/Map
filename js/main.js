@@ -13,7 +13,7 @@ const Trees = {
 
 // fields to show on the info panel when selecting a tree
 const displayFields = [
-  "Address",
+  //"Address",
   "Age",
   "Condition",
   "Height (m)",
@@ -85,7 +85,7 @@ function getTreeStyle(feature) {
       img: Trees.icons[mapIcon.id],
       anchor: [0.5, 1],
       imgSize: [mapIcon.width, mapIcon.height],
-      scale: 0.65
+      scale: 0.65,
     }),
     text: new ol.style.Text({
       font: "12px Segoe UI,sans-serif",
@@ -100,31 +100,50 @@ function getTreeStyle(feature) {
   });
 }
 
-function selectStyle(feature) {
-  const mapIcon = feature.get("Map Icon")
-    ? feature.get("Map Icon")[0]
-    : { id: "default", height: 48, width: 42 };
+function selectStyle(feature, resolution) {
+  let selectStyle;
+  if (feature.get("Map Visibility") === "Exact Location") {
+    const mapIcon = feature.get("Map Icon")
+      ? feature.get("Map Icon")[0]
+      : { id: "default", height: 48, width: 42 };
 
-    const selectstyle = new ol.style.Style({
-    image: new ol.style.Icon({
-      img: Trees.icons[mapIcon.id],
-      anchor: [0.5, 1],
-      imgSize: [mapIcon.width, mapIcon.height],
-      scale: 1.0
-    }),
-    text: new ol.style.Text({
-      font: "14px Segoe UI,sans-serif",
-      fill: new ol.style.Fill({ color: "#000" }),
-      stroke: new ol.style.Stroke({
-        color: "#add8e6",
-        width: 4,
+    selectStyle = new ol.style.Style({
+      image: new ol.style.Icon({
+        img: Trees.icons[mapIcon.id],
+        anchor: [0.5, 1],
+        imgSize: [mapIcon.width, mapIcon.height],
+        scale: 1.0,
       }),
-      offsetY: 18,
-      text: map.getView().getZoom() >= 16 ? feature.get("Tree Name") : "",
-    }),
-    zIndex: 9999
-  });
-  return selectstyle;
+      text: new ol.style.Text({
+        font: "14px Segoe UI,sans-serif",
+        fill: new ol.style.Fill({ color: "#000" }),
+        stroke: new ol.style.Stroke({
+          color: "#add8e6",
+          width: 4,
+        }),
+        offsetY: 18,
+        text: map.getView().getZoom() >= 16 ? feature.get("Tree Name") : "",
+      }),
+      zIndex: 9999,
+    });
+  } else {
+    const radiusInMeters = 1500; // Set this to your desired radius in meters
+    const radiusInPixels = radiusInMeters / resolution;
+
+    selectStyle = new ol.style.Style({
+      image: new ol.style.Circle({
+        radius: radiusInPixels,
+        fill: new ol.style.Fill({
+          color: "rgba(255, 255, 255, 0.2)",
+        }),
+        stroke: new ol.style.Stroke({
+          color: "blue",
+          width: 2,
+        }),
+      }),
+    });
+  }
+  return selectStyle;
 }
 
 // select interaction - handled manually so that it plays nice with adding a tree
@@ -245,8 +264,7 @@ function setupMapEvents() {
       NewTree.longitude = ol.proj.toLonLat(coordinate)[0].toFixed(5);
       setSelectedLocation();
       disableSelectingLocation();
-    }
-    else {      
+    } else {
       const treeFeature = map.forEachFeatureAtPixel(
         event.pixel,
         function (feature) {
@@ -275,8 +293,7 @@ function scrollInfoPanelUp() {
       top: top,
       behavior: "smooth",
     });
-  }
-  else {
+  } else {
     // on desktop, scroll to the top of the info panel
     infoPanelDiv.scrollTop = 0;
   }
@@ -290,6 +307,12 @@ function showTreeInfo(feature) {
     const description = feature.get("Description");
     if (description) {
       html += `<p>${description}</p>`;
+    }
+
+    if (feature.get("Map Visibility") === "Exact Location") {
+      html += `<p><strong>Address:</strong> ${feature.get("Address")}</p>`;
+    } else if (feature.get("Map Visibility") === "Neighbourhood") {
+      html += `<p><strong>Neighbourhood:</strong> ${feature.get("Neighbourhood Text")} (Exact location hidden)</p>`;
     }
 
     displayFields.forEach(function (field) {
@@ -444,11 +467,14 @@ function zoomToTree(treeId) {
   // Zoom the map to the corresponding feature and display its information
   const feature = Trees.layer.getSource().getFeatureById(treeId);
   const treeExtent = feature.getGeometry().getExtent();
+  const desiredZoom =
+    feature.get("Map Visibility") === "Exact Location" ? 16 : 13.5;
+
   map.getView().fit(treeExtent, {
     duration: 500,
     minResolution:
-      map.getView().getZoom() < 16
-        ? map.getView().getResolutionForZoom(16)
+      map.getView().getZoom() < desiredZoom
+        ? map.getView().getResolutionForZoom(desiredZoom)
         : map.getView().getResolution(),
   });
   showTreeInfo(feature);
