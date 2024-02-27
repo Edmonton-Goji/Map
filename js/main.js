@@ -81,7 +81,7 @@ function getTreeStyle(feature) {
       src: "img/Goji_Berry_48x63.png",
       anchor: [0.5, 1],
       imgSize: [48, 63],
-      scale: 0.65,
+      scale: 0.6,
     }),
     text: new ol.style.Text({
       font: "12px Segoe UI,sans-serif",
@@ -104,14 +104,14 @@ function selectStyle(feature, resolution) {
         src: "img/Goji_Berry_48x63.png",
         anchor: [0.5, 1],
         imgSize: [48, 63],
-        scale: 1.0,
+        scale: 0.7,
       }),
       text: new ol.style.Text({
         font: "14px Segoe UI,sans-serif",
         fill: new ol.style.Fill({ color: "#000" }),
         stroke: new ol.style.Stroke({
           color: "#add8e6",
-          width: 4,
+          width: 3,
         }),
         offsetY: 18,
         text: map.getView().getZoom() >= 16 ? feature.get("Tree Name") : "",
