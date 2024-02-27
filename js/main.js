@@ -304,7 +304,9 @@ function showTreeInfo(feature) {
     if (feature.get("Map Visibility") === "Exact Location") {
       html += `<p><strong>Address:</strong> ${feature.get("Address")}</p>`;
     } else if (feature.get("Map Visibility") === "Neighbourhood") {
-      html += `<p><strong>Neighbourhood:</strong> ${feature.get("Neighbourhood Text")} (Exact location hidden)</p>`;
+      html += `<p><strong>Neighbourhood:</strong> ${feature.get(
+        "Neighbourhood Text"
+      )} (Exact location hidden)</p>`;
     }
 
     displayFields.forEach(function (field) {
@@ -340,25 +342,27 @@ function showTreeInfo(feature) {
     infoPanel.innerHTML = html;
 
     // Add Google Maps button to bottom of Tree Info
-    const googleMapsButton = document.createElement("button");
-    googleMapsButton.style.border = "none";
-    googleMapsButton.style.background = "none";
-    googleMapsButton.title = "Open in Google Maps";
-    const googleMapsIcon =
-      '<img id="googleMapsIcon" src="img/google-maps-old.svg" style="width: 48px; height: 48px">';
-    googleMapsButton.innerHTML = googleMapsIcon;
-    googleMapsButton.addEventListener("click", function () {
-      const latitude = feature.get("Latitude");
-      const longitude = feature.get("Longitude");
-      let url =
-        "https://www.google.com/maps/search/?api=1&query=" +
-        latitude +
-        "%2C" +
-        longitude;
-      window.open(url);
-    });
+    if (feature.get("Map Visibility") === "Exact Location") {
+      const googleMapsButton = document.createElement("button");
+      googleMapsButton.style.border = "none";
+      googleMapsButton.style.background = "none";
+      googleMapsButton.title = "Open in Google Maps";
+      const googleMapsIcon =
+        '<img id="googleMapsIcon" src="img/google-maps-old.svg" style="width: 48px; height: 48px">';
+      googleMapsButton.innerHTML = googleMapsIcon;
+      googleMapsButton.addEventListener("click", function () {
+        const latitude = feature.get("Latitude");
+        const longitude = feature.get("Longitude");
+        let url =
+          "https://www.google.com/maps/search/?api=1&query=" +
+          latitude +
+          "%2C" +
+          longitude;
+        window.open(url);
+      });
 
-    infoPanel.appendChild(googleMapsButton);
+      infoPanel.appendChild(googleMapsButton);
+    }
 
     //set up image carousel
 
