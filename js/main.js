@@ -76,15 +76,11 @@ async function fetchTreeRecords() {
 }
 
 function getTreeStyle(feature) {
-  const mapIcon = feature.get("Map Icon")
-    ? feature.get("Map Icon")[0]
-    : { id: "default", height: 48, width: 42 };
-
   return new ol.style.Style({
     image: new ol.style.Icon({
-      img: Trees.icons[mapIcon.id],
+      src: "img/Goji_Berry_48x63.png",
       anchor: [0.5, 1],
-      imgSize: [mapIcon.width, mapIcon.height],
+      imgSize: [48, 63],
       scale: 0.65,
     }),
     text: new ol.style.Text({
@@ -103,15 +99,11 @@ function getTreeStyle(feature) {
 function selectStyle(feature, resolution) {
   let selectStyle;
   if (feature.get("Map Visibility") === "Exact Location") {
-    const mapIcon = feature.get("Map Icon")
-      ? feature.get("Map Icon")[0]
-      : { id: "default", height: 48, width: 42 };
-
     selectStyle = new ol.style.Style({
       image: new ol.style.Icon({
-        img: Trees.icons[mapIcon.id],
+        src: "img/Goji_Berry_48x63.png",
         anchor: [0.5, 1],
-        imgSize: [mapIcon.width, mapIcon.height],
+        imgSize: [48, 63],
         scale: 1.0,
       }),
       text: new ol.style.Text({
