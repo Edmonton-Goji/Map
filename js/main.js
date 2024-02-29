@@ -79,7 +79,7 @@ function getTreeStyle(feature) {
   return new ol.style.Style({
     image: new ol.style.Icon({
       src: "img/Goji_Berry_48x63.png",
-      anchor: [0.5, 1],
+      // anchor: [0.5, 1],
       imgSize: [48, 63],
       scale: 0.6,
     }),
@@ -90,7 +90,7 @@ function getTreeStyle(feature) {
         color: "#fff",
         width: 3,
       }),
-      offsetY: 18,
+      offsetY: 30,
       text: map.getView().getZoom() >= 16 ? feature.get("Tree Name") : "",
     }),
   });
@@ -102,7 +102,7 @@ function selectStyle(feature, resolution) {
     selectStyle = new ol.style.Style({
       image: new ol.style.Icon({
         src: "img/Goji_Berry_48x63.png",
-        anchor: [0.5, 1],
+        // anchor: [0.5, 1],
         imgSize: [48, 63],
         scale: 0.7,
       }),
@@ -113,7 +113,7 @@ function selectStyle(feature, resolution) {
           color: "#add8e6",
           width: 3,
         }),
-        offsetY: 18,
+        offsetY: 30,
         text: map.getView().getZoom() >= 16 ? feature.get("Tree Name") : "",
       }),
       zIndex: 9999,
