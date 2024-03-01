@@ -129,7 +129,7 @@ function selectStyle(feature, resolution) {
           color: "rgba(255, 255, 255, 0.2)",
         }),
         stroke: new ol.style.Stroke({
-          color: "blue",
+          color: "navy",
           width: 2,
         }),
       }),
@@ -153,7 +153,7 @@ function addTreeMarkers() {
   Trees.records.forEach(function (record) {
     const treeFeature = new ol.Feature({
       geometry: new ol.geom.Point(
-        ol.proj.fromLonLat([record.fields.Longitude, record.fields.Latitude])
+        ol.proj.fromLonLat([record.fields["Tree Longitude"], record.fields["Tree Latitude"]])
       ),
     });
     treeFeature.setId(record.id);
