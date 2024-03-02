@@ -231,7 +231,7 @@ async function fetchNeighbourhoods() {
   const baseId = "appQryFCb5Fi3nZ4c";
   const tableName = "tblINLME55PDTlLoM";
   const mapViewId = "viwpByxZWJh6W7IqV";
-  const airtableUrl = `https://api.airtable.com/v0/${baseId}/${tableName}?view=${mapViewId}`;
+  const airtableUrl = `https://api.airtable.com/v0/${baseId}/${tableName}?view=${mapViewId}&fields[]=Community&fields[]=Latitude&fields[]=Longitude`;
   const airTablePersonalAccessToken =
     "patS6srnbXVthid6g.8b1b2fe74ad1685642ceadbb93e63b8223ee21d14a569f9debe2e948a563170a";
   let offset = "";
@@ -263,8 +263,8 @@ async function fetchNeighbourhoods() {
 async function fetchMunicipalities() {
   const baseId = "appQryFCb5Fi3nZ4c";
   const tableName = "tbl4VepS6mAXOPPej";
-  const mapViewId = "viw2zD3dO24WkbLui";
-  const airtableUrl = `https://api.airtable.com/v0/${baseId}/${tableName}?view=${mapViewId}`;
+  const mapViewId = "viwQ0CNwn2oCkEdWx";
+  const airtableUrl = `https://api.airtable.com/v0/${baseId}/${tableName}?view=${mapViewId}&fields[]=Municipality&fields[]=Latitude&fields[]=Longitude`;
   const airTablePersonalAccessToken =
     "patS6srnbXVthid6g.8b1b2fe74ad1685642ceadbb93e63b8223ee21d14a569f9debe2e948a563170a";
   let offset = "";
