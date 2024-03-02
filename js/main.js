@@ -2,6 +2,10 @@ function isMobile() {
   return window.matchMedia("(max-width: 991px)").matches;
 }
 
+function useExactLocation(feature) {
+  return feature.get("Map Visibility") === "Map Exact Location";
+}
+
 let map = "";
 const Trees = {
   layer: "",
@@ -13,13 +17,8 @@ const Trees = {
 
 // fields to show on the info panel when selecting a tree
 const displayFields = [
-  //"Address",
   "Age",
   "Condition",
-  "Height (m)",
-  "Circumference (m)",
-  "Canopy Spread (m)",
-  "DBH (m)",
 ];
 
 // data and objects related to the Add a Tree functionality
@@ -98,7 +97,7 @@ function getTreeStyle(feature) {
 
 function selectStyle(feature, resolution) {
   let selectStyle;
-  if (feature.get("Map Visibility") === "Exact Location") {
+  if (useExactLocation(feature)) {
     selectStyle = new ol.style.Style({
       image: new ol.style.Icon({
         src: "img/Goji_Berry_48x63.png",
@@ -248,9 +247,9 @@ function resetMapPosition() {
 
 function setupMapEvents() {
   map.addInteraction(selectClick);
-  map.on("click", function (event) {
-    selectClick.getFeatures().clear();
+  map.on("click", function (event) {    
     if (NewTree.selectingLocation) {
+      selectClick.getFeatures().clear();
       const coordinate = event.coordinate;
       NewTree.latitude = ol.proj.toLonLat(coordinate)[1].toFixed(5);
       NewTree.longitude = ol.proj.toLonLat(coordinate)[0].toFixed(5);
@@ -264,6 +263,7 @@ function setupMapEvents() {
         }
       );
       if (treeFeature) {
+        selectClick.getFeatures().clear();
         clearSelectedLocation();
         selectClick.getFeatures().push(treeFeature);
         zoomToTree(treeFeature.getId());
@@ -301,9 +301,9 @@ function showTreeInfo(feature) {
       html += `<p>${description}</p>`;
     }
 
-    if (feature.get("Map Visibility") === "Exact Location") {
+    if (useExactLocation(feature)) {
       html += `<p><strong>Address:</strong> ${feature.get("Address")}</p>`;
-    } else if (feature.get("Map Visibility") === "Neighbourhood") {
+    } else {
       html += `<p><strong>Neighbourhood:</strong> ${feature.get(
         "Neighbourhood Text"
       )} (Exact location hidden)</p>`;
@@ -342,7 +342,7 @@ function showTreeInfo(feature) {
     infoPanel.innerHTML = html;
 
     // Add Google Maps button to bottom of Tree Info
-    if (feature.get("Map Visibility") === "Exact Location") {
+    if (useExactLocation(feature)) {
       const googleMapsButton = document.createElement("button");
       googleMapsButton.style.border = "none";
       googleMapsButton.style.background = "none";
@@ -464,16 +464,34 @@ function zoomToTree(treeId) {
   const feature = Trees.layer.getSource().getFeatureById(treeId);
   const treeExtent = feature.getGeometry().getExtent();
   const desiredZoom =
-    feature.get("Map Visibility") === "Exact Location" ? 16 : 13.5;
+  useExactLocation(feature) ? 16 : 13.5;
 
   map.getView().fit(treeExtent, {
     duration: 500,
     minResolution:
-      map.getView().getZoom() < desiredZoom
+      (map.getView().getZoom() < desiredZoom && useExactLocation(feature)) || !useExactLocation(feature)
         ? map.getView().getResolutionForZoom(desiredZoom)
         : map.getView().getResolution(),
   });
   showTreeInfo(feature);
+}
+
+// Zoom to the location of the neighbourhood
+function zoomToNeighbourhood(neighbourhood) {
+  map.getView().animate({
+    center: ol.proj.fromLonLat([neighbourhood.fields["Longitude"], neighbourhood.fields["Latitude"]]),
+    zoom: 15,
+    duration: 500,
+  });
+}
+
+// zoom to the Location of the municipality
+function zoomToMunicipality(municipality) {
+  map.getView().animate({
+    center: ol.proj.fromLonLat([municipality.longitude, municipality.latitude]),
+    zoom: 13,
+    duration: 500,
+  });
 }
 
 // Pagination
@@ -610,144 +628,6 @@ function showPhotoGallery() {
   scrollInfoPanelUp();
 }
 
-function showSearch() {
-  resetCarousel();
-  clearSelectedLocation();
-  const infoPanel = document.getElementById("infoPanel-content");
-  infoPanel.innerHTML = `<p class="treeName"><strong>Search</strong></p>`;
-  infoPanel.style.padding = "20px";
-
-  const searchContainer = document.createElement("div");
-  searchContainer.classList.add("search-container");
-
-  // Create the input field
-  const searchInput = document.createElement("input");
-  searchInput.type = "text";
-  searchInput.id = "searchInput";
-
-  // Create the search button
-  const searchButton = document.createElement("button");
-  searchButton.id = "searchButton";
-  searchButton.classList.add("btn");
-  searchButton.classList.add("btn-success");
-  searchButton.textContent = "Search";
-
-  // Add the input field and search button to search container
-  searchContainer.appendChild(searchInput);
-  searchContainer.appendChild(searchButton);
-  infoPanel.appendChild(searchContainer);
-
-  searchInput.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-      const query = searchInput.value;
-      const results = searchTrees(query);
-
-      // Handle the search results (e.g., display them on the page)
-      displaySearchResults(results);
-    }
-  });
-
-  searchButton.addEventListener("click", () => {
-    const searchInput = document.getElementById("searchInput");
-    const query = searchInput.value;
-    const results = searchTrees(query);
-
-    // Handle the search results (e.g., display them on the page)
-    displaySearchResults(results);
-  });
-
-  const searchResultsContainer = document.createElement("div");
-  searchResultsContainer.classList.add("search-results-container");
-  infoPanel.appendChild(searchResultsContainer);
-
-  searchInput.focus();
-
-  function displaySearchResults(results) {
-    searchResultsContainer.innerHTML = "";
-    // Create the table element and add it to the container
-    const tableElement = document.createElement("table");
-    tableElement.id = "searchResultsTable";
-    tableElement.classList.add("table");
-
-    // Create the table header element and add it to the table
-    const tableHeaderElement = document.createElement("thead");
-    const tableHeaderRowElement = document.createElement("tr");
-    tableHeaderRowElement.style.cursor = "auto";
-    const nameHeaderElement = document.createElement("th");
-    nameHeaderElement.innerText = "Name";
-    const addressHeaderElement = document.createElement("th");
-    addressHeaderElement.innerText = "Address";
-    tableHeaderRowElement.appendChild(nameHeaderElement);
-    tableHeaderRowElement.appendChild(addressHeaderElement);
-    tableHeaderElement.appendChild(tableHeaderRowElement);
-    tableElement.appendChild(tableHeaderElement);
-
-    // Create the table body element and add it to the table
-    const tableBodyElement = document.createElement("tbody");
-    tableElement.appendChild(tableBodyElement);
-
-    if (results.length === 0) {
-      searchResultsContainer.innerHTML = `<p style="margin: revert;">No Trees Found.</p>`;
-      scrollInfoPanelUp();
-      return;
-    }
-
-    results.forEach((tree) => {
-      // Create a new row element
-      const rowElement = document.createElement("tr");
-      rowElement.setAttribute("data-feature-id", tree.id);
-
-      // Create new cell elements for each field and add them to the row
-      const nameCell = document.createElement("td");
-      nameCell.innerText = tree.fields["Tree Name"];
-      rowElement.appendChild(nameCell);
-
-      const addressCell = document.createElement("td");
-      addressCell.innerText = tree.fields.Address;
-      rowElement.appendChild(addressCell);
-
-      // Add the row to the table body
-      tableBodyElement.appendChild(rowElement);
-
-      // Add a click event listener to each table row
-      rowElement.addEventListener("click", function (event) {
-        selectTree(tree.id);
-      });
-    });
-    searchResultsContainer.appendChild(tableElement);
-    scrollInfoPanelUp();
-  }
-
-  scrollInfoPanelUp();
-}
-
-function searchTrees(query) {
-  query = query.toLowerCase();
-  return Trees.records.filter((tree) => {
-    const name = tree.fields["Tree Name"]
-      ? tree.fields["Tree Name"].toLowerCase()
-      : "";
-    const address = tree.fields.Address
-      ? tree.fields.Address.toLowerCase()
-      : "";
-    const neighbourhood =
-      tree.fields["Neighbourhood Text"] && tree.fields["Neighbourhood Text"][0]
-        ? tree.fields["Neighbourhood Text"][0].toLowerCase()
-        : "";
-    const species =
-      tree.fields["Genus species Text"] && tree.fields["Genus species Text"][0]
-        ? tree.fields["Genus species Text"][0].toLowerCase()
-        : "";
-
-    return (
-      (name && name.includes(query)) ||
-      (address && address.includes(query)) ||
-      (neighbourhood && neighbourhood.includes(query)) ||
-      (species && species.includes(query))
-    );
-  });
-}
-
 function showAddATree() {
   resetCarousel();
   clearSelectedLocation();
@@ -845,7 +725,7 @@ function showAddATree() {
 
 function addTreeAtLocation() {
   if (NewTree.locationSelected()) {
-    const airtableFormUrl = `https://airtable.com/appQryFCb5Fi3nZ4c/pags82ZrRUulWHOg4/form?prefill_Latitude=${NewTree.latitude}&prefill_Longitude=${NewTree.longitude}`;
+    const airtableFormUrl = `https://airtable.com/appQryFCb5Fi3nZ4c/pags82ZrRUulWHOg4/form?prefill_Tree Latitude=${NewTree.latitude}&prefill_Tree Longitude=${NewTree.longitude}`;
     // opens a new window with the airtable form for nominating a tree
     window.open(airtableFormUrl, "_blank");
   }
