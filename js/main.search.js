@@ -141,7 +141,7 @@ function showSearch() {
     // if no results are found, display a message
     if (results.neighbourhoods.length === 0 && results.trees.length === 0) {
       searchResultsContainer.innerHTML = `<p style="margin: revert;">No Results Found.</p>`;
-      scrollInfoPanelUp();
+      // scrollInfoPanelUp();
       return;
     }
 
@@ -215,15 +215,16 @@ function showSearch() {
 
       // Add a click event listener to each table row
       rowElement.addEventListener("click", function (event) {
+        scrollInfoPanelDown();
         selectTree(tree.id);
       });
     });
 
     searchResultsContainer.appendChild(tableElement);
-    scrollInfoPanelUp();
+    // scrollInfoPanelUp();
   }
 
-  scrollInfoPanelUp();
+  // scrollInfoPanelUp();
 }
 
 // fetches neighbourhoods and their coordinates from airtable

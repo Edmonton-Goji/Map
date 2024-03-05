@@ -177,7 +177,7 @@ function addTreeMarkers() {
 
   const baseTileLayer = new ol.layer.Tile({
     source: new ol.source.OSM({
-      attributions: [],
+      // attributions: [],
     }),
   });
 
@@ -211,15 +211,14 @@ function addTreeMarkers() {
       maxZoom: 19,
       minZoom: 5,
     }),
-    controls: [],
   });
 
   resetMapPosition();
   setupMapEvents();
-  scrollInfoPanelUp();
+  // scrollInfoPanelUp();
   if (isMobile()) {
     document.getElementById("basicTutorial").innerHTML =
-      "Scroll up to view the map. Select a tree for more information or use the menu to:";
+      "Scroll up to view the map. Select a goji for more information or use the menu to:";
   }
 
   // hide the loading screen
@@ -267,7 +266,6 @@ function setupMapEvents() {
         clearSelectedLocation();
         selectClick.getFeatures().push(treeFeature);
         zoomToTree(treeFeature.getId());
-        scrollInfoPanelUp();
       }
     }
   });
@@ -288,6 +286,22 @@ function scrollInfoPanelUp() {
   } else {
     // on desktop, scroll to the top of the info panel
     infoPanelDiv.scrollTop = 0;
+  }
+}
+
+// function to scroll the info panel down
+function scrollInfoPanelDown() {
+  if (isMobile()) {
+    // scroll view to the top of the map container
+    const mapContainer = document.getElementById("map");
+    const rect = mapContainer.getBoundingClientRect();
+    const offset = window.scrollY;
+    const top = rect.top + offset;
+
+    window.scrollTo({
+      top: top,
+      behavior: "smooth",
+    });
   }
 }
 
@@ -456,10 +470,10 @@ function selectTree(treeId) {
   // Add the feature to the selection
   selectClick.getFeatures().push(feature);
   zoomToTree(treeId);
-  scrollInfoPanelUp();
 }
 
 function zoomToTree(treeId) {
+  scrollInfoPanelDown();
   // Zoom the map to the corresponding feature and display its information
   const feature = Trees.layer.getSource().getFeatureById(treeId);
   const treeExtent = feature.getGeometry().getExtent();
@@ -478,6 +492,7 @@ function zoomToTree(treeId) {
 
 // Zoom to the location of the neighbourhood
 function zoomToNeighbourhood(neighbourhood) {
+  scrollInfoPanelDown();
   map.getView().animate({
     center: ol.proj.fromLonLat([
       neighbourhood.fields["Longitude"],
@@ -490,6 +505,7 @@ function zoomToNeighbourhood(neighbourhood) {
 
 // zoom to the Location of the municipality
 function zoomToMunicipality(municipality) {
+  scrollInfoPanelDown();
   map.getView().animate({
     center: ol.proj.fromLonLat([municipality.longitude, municipality.latitude]),
     zoom: 13,
@@ -695,7 +711,7 @@ function showAddATree() {
     NewTree.latitude = position.coords.latitude.toFixed(5);
     NewTree.longitude = position.coords.longitude.toFixed(5);
     setSelectedLocation();
-    scrollInfoPanelUp();
+    // scrollInfoPanelUp();
   }
 
   // Function to handle errors
