@@ -297,15 +297,7 @@ function resetInfoPanelScrollPosition() {
 
 // reset screen so that the map is fully visible at the top of the device
 function showMobileMap() {
-    // scroll view to the top of the map container
-    const mapContainer = document.getElementById("map");
-    const rect = mapContainer.getBoundingClientRect();
-    const offset = window.scrollY;
-    const top = rect.top + offset;
-
-    window.scrollTo({
-      top: top,
-    });
+    document.scrollingElement.scrollTop = 0;
 }
 
 function showTreeInfo(feature) {
