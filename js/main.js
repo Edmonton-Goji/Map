@@ -272,9 +272,9 @@ function setupMapEvents() {
 }
 
 function scrollInfoPanelUp() {
-  const infoPanelDiv = document.getElementById("infoPanel");
   if (isMobile()) {
     // on mobile, move the div up or down so that the top edge aligns with the top edge of the screen
+    const infoPanelDiv = document.getElementById("infoPanel");
     const rect = infoPanelDiv.getBoundingClientRect();
     const offset = window.scrollY;
     const top = rect.top + offset;
@@ -285,13 +285,18 @@ function scrollInfoPanelUp() {
     });
   } else {
     // on desktop, scroll to the top of the info panel
-    infoPanelDiv.scrollTop = 0;
+    resetInfoPanelScrollPosition();
   }
 }
 
-// function to scroll the info panel down
-function scrollInfoPanelDown() {
-  if (isMobile()) {
+// reset the info panel to the top of the content - desktop mode only
+function resetInfoPanelScrollPosition() {
+    const infoPanelDiv = document.getElementById("infoPanel");
+    infoPanelDiv.scrollTop = 0;
+}
+
+// reset screen so that the map is fully visible at the top of the device
+function showMobileMap() {
     // scroll view to the top of the map container
     const mapContainer = document.getElementById("map");
     const rect = mapContainer.getBoundingClientRect();
@@ -301,11 +306,6 @@ function scrollInfoPanelDown() {
     window.scrollTo({
       top: top,
     });
-  } else {
-    // on desktop, scroll to the top of the info panel
-    const infoPanelDiv = document.getElementById("infoPanel");
-    infoPanelDiv.scrollTop = 0;
-  }
 }
 
 function showTreeInfo(feature) {
@@ -475,8 +475,11 @@ function selectTree(treeId) {
   zoomToTree(treeId);
 }
 
+// Zoom to the location of the tree
 function zoomToTree(treeId) {
-  scrollInfoPanelDown();
+  // either show the mobile map or reset the info panel scroll position for desktop
+  isMobile() ? showMobileMap() : resetInfoPanelScrollPosition();
+
   // Zoom the map to the corresponding feature and display its information
   const feature = Trees.layer.getSource().getFeatureById(treeId);
   const treeExtent = feature.getGeometry().getExtent();
@@ -495,7 +498,7 @@ function zoomToTree(treeId) {
 
 // Zoom to the location of the neighbourhood
 function zoomToNeighbourhood(neighbourhood) {
-  scrollInfoPanelDown();
+  showMobileMap();
   map.getView().animate({
     center: ol.proj.fromLonLat([
       neighbourhood.fields["Longitude"],
@@ -508,7 +511,7 @@ function zoomToNeighbourhood(neighbourhood) {
 
 // zoom to the Location of the municipality
 function zoomToMunicipality(municipality) {
-  scrollInfoPanelDown();
+  showMobileMap();
   map.getView().animate({
     center: ol.proj.fromLonLat([municipality.longitude, municipality.latitude]),
     zoom: 13,
@@ -591,6 +594,7 @@ function showPhotoGallery() {
 
       // Zoom to tree when clicking on the Tree Name
       treeName.addEventListener("click", function (event) {
+        
         selectTree(tree.id);
       });
       paginatedContent.appendChild(treePhoto);

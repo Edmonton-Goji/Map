@@ -1,4 +1,3 @@
-// let municipalities = [];
 let neighbourhoods = [];
 
 // search through municipalities, neighbourhoods, and trees and return the results
@@ -20,13 +19,6 @@ function searchNeighbourhoods(query) {
     return neighbourhood.fields["Community"].toLowerCase().includes(query);
   });
 }
-
-// search through municipalities and return the results
-// function searchMunicipalities(query) {
-//   return municipalities.filter((municipality) => {
-//     return municipality.fields["Municipality"].toLowerCase().includes(query);
-//   });
-// }
 
 // search through trees and return the results
 function searchTrees(query) {
@@ -59,9 +51,6 @@ function showSearch() {
   if (neighbourhoods.length === 0) {
     fetchNeighbourhoods();
   }
-  //if(municipalities.length === 0) {
-  //fetchMunicipalities();
-  //}
 
   resetCarousel();
   clearSelectedLocation();
@@ -141,34 +130,8 @@ function showSearch() {
     // if no results are found, display a message
     if (results.neighbourhoods.length === 0 && results.trees.length === 0) {
       searchResultsContainer.innerHTML = `<p style="margin: revert;">No Results Found.</p>`;
-      // scrollInfoPanelUp();
       return;
     }
-
-    // add municipalities to the search results table
-    // results.municipalities.forEach((municipality) => {
-    //   // Create a new row element
-    //   const rowElement = document.createElement("tr");
-    //   rowElement.setAttribute("data-feature-id", municipality.id);
-
-    //   // Create new cell elements for each field and add them to the row
-    //   const nameCell = document.createElement("td");
-    //   nameCell.innerText = municipality.name;
-    //   rowElement.appendChild(nameCell);
-
-    //   const typeCell = document.createElement("td");
-    //   typeCell.innerText = "Municipality";
-    //   rowElement.appendChild(typeCell);
-
-    //   // Add the row to the table body
-    //   tableBodyElement.appendChild(rowElement);
-
-    //   // Add a click event listener to each table row
-    //   rowElement.addEventListener("click", function (event) {
-    //     // zoom to coordinates of municipality
-    //     zoomToMunicipality(municipality);
-    //   });
-    // });
 
     // add neighbourhoods to the search results table
     results.neighbourhoods.forEach((neighbourhood) => {
@@ -215,16 +178,12 @@ function showSearch() {
 
       // Add a click event listener to each table row
       rowElement.addEventListener("click", function (event) {
-        scrollInfoPanelDown();
         selectTree(tree.id);
       });
     });
 
     searchResultsContainer.appendChild(tableElement);
-    // scrollInfoPanelUp();
   }
-
-  // scrollInfoPanelUp();
 }
 
 // fetches neighbourhoods and their coordinates from airtable
