@@ -1,4 +1,4 @@
-let municipalities = [];
+// let municipalities = [];
 let neighbourhoods = [];
 
 // search through municipalities, neighbourhoods, and trees and return the results
@@ -22,11 +22,11 @@ function searchNeighbourhoods(query) {
 }
 
 // search through municipalities and return the results
-function searchMunicipalities(query) {
-  return municipalities.filter((municipality) => {
-    return municipality.fields["Municipality"].toLowerCase().includes(query);
-  });
-}
+// function searchMunicipalities(query) {
+//   return municipalities.filter((municipality) => {
+//     return municipality.fields["Municipality"].toLowerCase().includes(query);
+//   });
+// }
 
 // search through trees and return the results
 function searchTrees(query) {
@@ -81,7 +81,7 @@ function showSearch() {
   const searchButton = document.createElement("button");
   searchButton.id = "searchButton";
   searchButton.classList.add("btn");
-  searchButton.classList.add("btn-success");
+  searchButton.classList.add("btn-danger");
   searchButton.textContent = "Search";
 
   // Add the input field and search button to search container
@@ -251,10 +251,7 @@ async function fetchNeighbourhoods() {
       headers,
     });
     let data = await response.json();
-    neighbourhoods = [
-      ...neighbourhoods,
-      ...data.records,
-    ];
+    neighbourhoods = [...neighbourhoods, ...data.records];
     offset = data.offset;
   }
 }
@@ -284,10 +281,7 @@ async function fetchMunicipalities() {
       headers,
     });
     let data = await response.json();
-    municipalities = [
-      ...municipalities,
-      ...data.records,
-    ];
+    municipalities = [...municipalities, ...data.records];
     offset = data.offset;
   }
 }

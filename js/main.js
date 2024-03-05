@@ -16,10 +16,7 @@ const Trees = {
 };
 
 // fields to show on the info panel when selecting a tree
-const displayFields = [
-  "Age",
-  "Condition",
-];
+const displayFields = ["Age", "Condition"];
 
 // data and objects related to the Add a Tree functionality
 const NewTree = {
@@ -152,7 +149,10 @@ function addTreeMarkers() {
   Trees.records.forEach(function (record) {
     const treeFeature = new ol.Feature({
       geometry: new ol.geom.Point(
-        ol.proj.fromLonLat([record.fields["Tree Longitude"], record.fields["Tree Latitude"]])
+        ol.proj.fromLonLat([
+          record.fields["Tree Longitude"],
+          record.fields["Tree Latitude"],
+        ])
       ),
     });
     treeFeature.setId(record.id);
@@ -247,7 +247,7 @@ function resetMapPosition() {
 
 function setupMapEvents() {
   map.addInteraction(selectClick);
-  map.on("click", function (event) {    
+  map.on("click", function (event) {
     if (NewTree.selectingLocation) {
       selectClick.getFeatures().clear();
       const coordinate = event.coordinate;
@@ -306,7 +306,7 @@ function showTreeInfo(feature) {
     } else {
       html += `<p><strong>Neighbourhood:</strong> ${feature.get(
         "Neighbourhood Text"
-      )} (Exact location hidden)</p>`;
+      )}</p>`;
     }
 
     displayFields.forEach(function (field) {
@@ -463,13 +463,13 @@ function zoomToTree(treeId) {
   // Zoom the map to the corresponding feature and display its information
   const feature = Trees.layer.getSource().getFeatureById(treeId);
   const treeExtent = feature.getGeometry().getExtent();
-  const desiredZoom =
-  useExactLocation(feature) ? 16 : 13.5;
+  const desiredZoom = useExactLocation(feature) ? 16 : 13.5;
 
   map.getView().fit(treeExtent, {
     duration: 500,
     minResolution:
-      (map.getView().getZoom() < desiredZoom && useExactLocation(feature)) || !useExactLocation(feature)
+      (map.getView().getZoom() < desiredZoom && useExactLocation(feature)) ||
+      !useExactLocation(feature)
         ? map.getView().getResolutionForZoom(desiredZoom)
         : map.getView().getResolution(),
   });
@@ -479,7 +479,10 @@ function zoomToTree(treeId) {
 // Zoom to the location of the neighbourhood
 function zoomToNeighbourhood(neighbourhood) {
   map.getView().animate({
-    center: ol.proj.fromLonLat([neighbourhood.fields["Longitude"], neighbourhood.fields["Latitude"]]),
+    center: ol.proj.fromLonLat([
+      neighbourhood.fields["Longitude"],
+      neighbourhood.fields["Latitude"],
+    ]),
     zoom: 15,
     duration: 500,
   });
@@ -643,7 +646,7 @@ function showAddATree() {
 
   // Create the Current Location button
   const currentLocationButton = document.createElement("button");
-  currentLocationButton.classList.add("btn", "btn-success");
+  currentLocationButton.classList.add("btn", "btn-danger");
   currentLocationButton.textContent = "Current Location";
 
   // Create the Select Location button
@@ -660,7 +663,7 @@ function showAddATree() {
   // Create the Add Tree button
   const addTreeButton = document.createElement("button");
   addTreeButton.id = "addTreeButton";
-  addTreeButton.classList.add("btn", "btn-success");
+  addTreeButton.classList.add("btn", "btn-danger");
   addTreeButton.textContent = "Add Goji";
   addTreeButton.disabled = true;
 
