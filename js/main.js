@@ -216,10 +216,10 @@ function addTreeMarkers() {
   resetMapPosition();
   setupMapEvents();
   // scrollInfoPanelUp();
-  if (isMobile()) {
-    document.getElementById("basicTutorial").innerHTML =
-      "Scroll up to view the map. Select a goji for more information or use the menu to:";
-  }
+  // if (isMobile()) {
+  //   document.getElementById("basicTutorial").innerHTML =
+  //     "Scroll up to view the map. Select a goji for more information or use the menu to:";
+  // }
 
   // hide the loading screen
   document.getElementById("loading-screen").style.display = "none";
@@ -300,7 +300,6 @@ function scrollInfoPanelDown() {
 
     window.scrollTo({
       top: top,
-      behavior: "smooth",
     });
   }
 }
