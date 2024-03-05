@@ -371,7 +371,6 @@ body {
 /* Styles for mobile devices */
 @media (max-width: 991px) {
   body {
-    overflow-x: hidden;
     overflow-y: auto;
   }
 
