@@ -301,6 +301,10 @@ function scrollInfoPanelDown() {
     window.scrollTo({
       top: top,
     });
+  } else {
+    // on desktop, scroll to the top of the info panel
+    const infoPanelDiv = document.getElementById("infoPanel");
+    infoPanelDiv.scrollTop = 0;
   }
 }
 
