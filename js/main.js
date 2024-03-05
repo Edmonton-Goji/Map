@@ -291,13 +291,13 @@ function scrollInfoPanelUp() {
 
 // reset the info panel to the top of the content - desktop mode only
 function resetInfoPanelScrollPosition() {
-    const infoPanelDiv = document.getElementById("infoPanel");
-    infoPanelDiv.scrollTop = 0;
+  const infoPanelDiv = document.getElementById("infoPanel");
+  infoPanelDiv.scrollTop = 0;
 }
 
 // reset screen so that the map is fully visible at the top of the device
 function showMobileMap() {
-    document.scrollingElement.scrollTop = 0;
+  document.scrollingElement.scrollTop = 0;
 }
 
 function showTreeInfo(feature) {
@@ -469,6 +469,9 @@ function selectTree(treeId) {
 
 // Zoom to the location of the tree
 function zoomToTree(treeId) {
+  // either show the mobile map or reset the info panel scroll position for desktop
+  isMobile() ? showMobileMap() : resetInfoPanelScrollPosition();
+
   // Zoom the map to the corresponding feature and display its information
   const feature = Trees.layer.getSource().getFeatureById(treeId);
   const treeExtent = feature.getGeometry().getExtent();
@@ -483,8 +486,9 @@ function zoomToTree(treeId) {
         : map.getView().getResolution(),
   });
   showTreeInfo(feature);
-  
+
   // either show the mobile map or reset the info panel scroll position for desktop
+  // run this a second time once content is finished loading
   isMobile() ? showMobileMap() : resetInfoPanelScrollPosition();
 }
 
@@ -585,7 +589,7 @@ function showPhotoGallery() {
       treeName.style.cursor = "pointer";
 
       // Zoom to tree when clicking on the Tree Name
-      treeName.addEventListener("click", function (event) {        
+      treeName.addEventListener("click", function (event) {
         selectTree(tree.id);
       });
       paginatedContent.appendChild(treePhoto);
