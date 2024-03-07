@@ -10,9 +10,7 @@ let map = "";
 const Trees = {
   layer: "",
   records: [],
-  top: [],
   withPhotos: [],
-  icons: {},
 };
 
 // fields to show on the info panel when selecting a tree
@@ -74,10 +72,10 @@ async function fetchTreeRecords() {
 function getTreeStyle(feature) {
   return new ol.style.Style({
     image: new ol.style.Icon({
-      src: "img/Goji_Berry_48x63.png",
+      src: "img/Goji-Logo_40x101.png",
       // anchor: [0.5, 1],
-      imgSize: [48, 63],
-      scale: 0.6,
+      imgSize: [40, 101],
+      scale: 0.5,
     }),
     text: new ol.style.Text({
       font: "12px Segoe UI,sans-serif",
@@ -86,7 +84,7 @@ function getTreeStyle(feature) {
         color: "#fff",
         width: 3,
       }),
-      offsetY: 30,
+      offsetY: 35,
       text: map.getView().getZoom() >= 16 ? feature.get("Tree Name") : "",
     }),
   });
@@ -97,10 +95,10 @@ function selectStyle(feature, resolution) {
   if (useExactLocation(feature)) {
     selectStyle = new ol.style.Style({
       image: new ol.style.Icon({
-        src: "img/Goji_Berry_48x63.png",
+        src: "img/Goji-Logo_40x101.png",
         // anchor: [0.5, 1],
-        imgSize: [48, 63],
-        scale: 0.7,
+        imgSize: [40, 101],
+        scale: 0.6,
       }),
       text: new ol.style.Text({
         font: "14px Segoe UI,sans-serif",
@@ -109,7 +107,7 @@ function selectStyle(feature, resolution) {
           color: "#add8e6",
           width: 3,
         }),
-        offsetY: 30,
+        offsetY: 40,
         text: map.getView().getZoom() >= 16 ? feature.get("Tree Name") : "",
       }),
       zIndex: 9999,
@@ -142,8 +140,6 @@ const selectClick = new ol.interaction.Select({
 
 function addTreeMarkers() {
   const treeFeatures = [];
-  Trees.icons.default = new Image();
-  Trees.icons.default.src = "img/tree.png";
 
   // Add markers to the map
   Trees.records.forEach(function (record) {
@@ -166,19 +162,10 @@ function addTreeMarkers() {
     if ("Photo" in record.fields) {
       Trees.withPhotos.push(record);
     }
-
-    if ("Map Icon" in record.fields) {
-      const image = new Image();
-      image.crossOrigin = "anonymous";
-      image.src = record.fields["Map Icon"][0].url;
-      Trees.icons[`${record.fields["Map Icon"][0].id}`] = image;
-    }
   });
 
   const baseTileLayer = new ol.layer.Tile({
-    source: new ol.source.OSM({
-      // attributions: [],
-    }),
+    source: new ol.source.OSM(),
   });
 
   Trees.layer = new ol.layer.Vector({
