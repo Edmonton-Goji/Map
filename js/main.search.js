@@ -215,33 +215,3 @@ async function fetchNeighbourhoods() {
     offset = data.offset;
   }
 }
-
-// fetches municipalities and their coordinates from AirTable
-async function fetchMunicipalities() {
-  const baseId = "appQryFCb5Fi3nZ4c";
-  const tableName = "tbl4VepS6mAXOPPej";
-  const mapViewId = "viwQ0CNwn2oCkEdWx";
-  const airtableUrl = `https://api.airtable.com/v0/${baseId}/${tableName}?view=${mapViewId}&fields[]=Municipality&fields[]=Latitude&fields[]=Longitude`;
-  const airTablePersonalAccessToken =
-    "patS6srnbXVthid6g.8b1b2fe74ad1685642ceadbb93e63b8223ee21d14a569f9debe2e948a563170a";
-  let offset = "";
-  const headers = {
-    Authorization: `Bearer ${airTablePersonalAccessToken}`,
-  };
-  let response = await fetch(airtableUrl, {
-    headers,
-  });
-  let data = await response.json();
-  municipalities = data.records;
-  offset = data.offset;
-
-  while (offset) {
-    const url = airtableUrl + `&offset=${offset}`;
-    let response = await fetch(url, {
-      headers,
-    });
-    let data = await response.json();
-    municipalities = [...municipalities, ...data.records];
-    offset = data.offset;
-  }
-}
