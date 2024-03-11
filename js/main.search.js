@@ -1,13 +1,11 @@
 let neighbourhoods = [];
 
-// search through municipalities, neighbourhoods, and trees and return the results
+// search through neighbourhoods, and trees and return the results
 function searchAll(query) {
   query = query.toLowerCase();
-  //const municipalityResults = searchMunicipalities(query);
   const neighbourhoodResults = searchNeighbourhoods(query);
   const treeResults = searchTrees(query);
   return {
-    //municipalities: municipalityResults,
     neighbourhoods: neighbourhoodResults,
     trees: treeResults,
   };

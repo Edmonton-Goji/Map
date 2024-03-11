@@ -37,44 +37,39 @@
       <div id="map"></div>
       <div id="infoPanel">
         <div id="infoPanel-header" class="row w-100">
-          <div class="col-8 d-flex justify-content-center">
-            <h2>Edmonton Goji Map</h2>
-          </div>
-          <div
-            class="btn-group col-4 d-flex justify-content-center align-items-center"
-          >
-            <button
-              id="optionsBtn"
-              class="btn btn-danger dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
+          <div class="col-12 d-flex justify-content-center align-items-center position-relative" style="padding: unset;">
+            <div
+              class="btn-group d-flex justify-content-center align-items-center"
+              style="position: absolute; right: 1.5em; top: 50%; transform: translateY(-50%); z-index: 1;"
             >
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-dark">
-              <li>
-                <a class="dropdown-item" onclick="showSearch()">Search</a>
-              </li>
-              <li>
-                <a class="dropdown-item" onclick="showPhotoGallery()"
-                  >Photo Gallery</a
-                >
-              </li>
-              <li>
-                <a
-                  id="nominateBtn"
-                  class="dropdown-item"
-                  onclick="showAddATree()"
-                  >Add a Goji</a
-                >
-              </li>
-              <li>
-                <a class="dropdown-item" onclick="resetMapPosition()"
-                  >Reset Map</a
-                >
-              </li>
-            </ul>
+              <button
+                id="optionsBtn"
+                class="btn btn-danger dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-dark">
+                <li>
+                  <a class="dropdown-item" onclick="showSearch()">Search</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" onclick="showPhotoGallery()">Photo Gallery</a>
+                </li>
+                <li>
+                  <a id="nominateBtn" class="dropdown-item" onclick="showAddATree()">Add a Goji</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" onclick="resetMapPosition()">Reset Map</a>
+                </li>
+              </ul>
+            </div>
+            <img
+              src="img/goji_banner.png"
+              style="margin: auto; height: 100%; width: 100%; object-fit: cover;"
+            />
           </div>
         </div>
         <div id="treeImages">
@@ -184,20 +179,6 @@
               </div>
             </div>
           </p>
-          <p>
-            
-          </p>
-          <!-- <p id="basicTutorial">
-            Select a goji on the map for more information or use the menu to:
-          </p>
-          <p>1) Search for a goji by its name, address, or neighbourhood.</p>
-          <p>
-            2) View the photo gallery. Select an image to view it in fullscreen
-            (desktop only) or select the plant name for more information.
-          </p>
-          <p>3) Add a goji to the map.</p>
-          <p>4) Reset the map to its default position.</p> -->
-          
         </div>
       </div>
     </div>
