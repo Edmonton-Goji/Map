@@ -282,6 +282,55 @@ function showMobileMap() {
   document.scrollingElement.scrollTop = 0;
 }
 
+function createGoogleMapsButton(feature) {
+  const googleMapsButton = document.createElement("button");
+  googleMapsButton.style.border = "none";
+  googleMapsButton.style.background = "none";
+  googleMapsButton.title = "Open in Google Maps";
+  const googleMapsIcon =
+    '<img id="googleMapsIcon" src="img/google-maps-old.svg" style="width: 48px; height: 48px">';
+  googleMapsButton.innerHTML = googleMapsIcon;
+  googleMapsButton.addEventListener("click", function () {
+    const latitude = feature.get("Tree Latitude");
+    const longitude = feature.get("Tree Longitude");
+    let url =
+      "https://www.google.com/maps/search/?api=1&query=" +
+      latitude +
+      "%2C" +
+      longitude;
+    window.open(url);
+  });
+
+  return googleMapsButton;
+}
+
+function createCarouselItem(image, index) {
+  // create carousel indicator
+  const indicator = document.createElement("button");
+  indicator.setAttribute("data-bs-target", "#treeCarousel");
+  indicator.setAttribute("data-bs-slide-to", index);
+  indicator.setAttribute("aria-label", "Slide " + (index + 1));
+
+  // create carousel item
+  const item = document.createElement("div");
+  item.classList.add("carousel-item");
+
+  // create image element
+  const img = document.createElement("img");
+  img.classList.add("d-block", "w-100");
+  img.src = image.url;
+
+  if (index === 0) {
+    indicator.classList.add("active");
+    item.classList.add("active");
+  }
+
+  // add image to item and item to inner carousel
+  item.appendChild(img);
+
+  return { indicator, item };
+}
+
 function showTreeInfo(feature) {
   if (feature) {
     let html = "";
@@ -295,9 +344,7 @@ function showTreeInfo(feature) {
     if (useExactLocation(feature)) {
       html += `<p><strong>Address:</strong> ${feature.get("Address")}</p>`;
     } else {
-      html += `<p><strong>Neighbourhood:</strong> ${feature.get(
-        "Neighbourhood Text"
-      )}</p>`;
+      html += `<p><strong>Neighbourhood:</strong> ${feature.get("Neighbourhood Text")}</p>`;
     }
 
     displayFields.forEach(function (field) {
@@ -306,10 +353,7 @@ function showTreeInfo(feature) {
         if (field.slice(-3) === "(m)") {
           // convert meters to feet
           const measureFeet = (fieldValue * 3.28084).toFixed(2);
-          html += `<p><strong>${field.slice(
-            0,
-            -4
-          )}:</strong> ${fieldValue.toFixed(2)}m (${measureFeet} ft)</p>`;
+          html += `<p><strong>${field.slice(0,-4)}:</strong> ${fieldValue.toFixed(2)}m (${measureFeet} ft)</p>`;
         } else {
           html += `<p><strong>${field}:</strong> ${fieldValue}</p>`;
         }
@@ -334,30 +378,12 @@ function showTreeInfo(feature) {
 
     // Add Google Maps button to bottom of Tree Info
     if (useExactLocation(feature)) {
-      const googleMapsButton = document.createElement("button");
-      googleMapsButton.style.border = "none";
-      googleMapsButton.style.background = "none";
-      googleMapsButton.title = "Open in Google Maps";
-      const googleMapsIcon =
-        '<img id="googleMapsIcon" src="img/google-maps-old.svg" style="width: 48px; height: 48px">';
-      googleMapsButton.innerHTML = googleMapsIcon;
-      googleMapsButton.addEventListener("click", function () {
-        const latitude = feature.get("Tree Latitude");
-        const longitude = feature.get("Tree Longitude");
-        let url =
-          "https://www.google.com/maps/search/?api=1&query=" +
-          latitude +
-          "%2C" +
-          longitude;
-        window.open(url);
-      });
-
+      const googleMapsButton = createGoogleMapsButton(feature);
       infoPanel.appendChild(googleMapsButton);
     }
 
     //set up image carousel
 
-    // reset carousel
     resetCarousel();
 
     const photos = feature.get("Photo");
@@ -366,29 +392,8 @@ function showTreeInfo(feature) {
       const carouselInner = document.querySelector(".carousel-inner");
 
       photos.forEach((image, index) => {
-        // create carousel indicator
-        const indicator = document.createElement("button");
-        indicator.setAttribute("data-bs-target", "#treeCarousel");
-        indicator.setAttribute("data-bs-slide-to", index);
-        indicator.setAttribute("aria-label", "Slide " + (index + 1));
-
-        // create carousel item
-        const item = document.createElement("div");
-        item.classList.add("carousel-item");
-
-        // create image element
-        const img = document.createElement("img");
-        img.classList.add("d-block", "w-100");
-        img.src = image.url;
-
-        if (index === 0) {
-          indicator.classList.add("active");
-          item.classList.add("active");
-        }
-
-        // add image to item and item to inner carousel
+        const { indicator, item } = createCarouselItem(image, index);
         carouselIndicators.appendChild(indicator);
-        item.appendChild(img);
         carouselInner.appendChild(item);
       });
 
