@@ -396,6 +396,10 @@ body {
   #infoPanel-content {
     overflow-y: auto;
   }
+
+  #infoPanel-header {
+    position: static;
+  }
 }
 
 .dropdown-item {
