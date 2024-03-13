@@ -73,8 +73,6 @@ function getTreeStyle(feature) {
   return new ol.style.Style({
     image: new ol.style.Icon({
       src: "img/Goji-Logo_40x101.png",
-      // anchor: [0.5, 1],
-      imgSize: [40, 101],
       scale: 0.5,
     }),
     text: new ol.style.Text({
@@ -96,8 +94,6 @@ function selectStyle(feature, resolution) {
     selectStyle = new ol.style.Style({
       image: new ol.style.Icon({
         src: "img/Goji-Logo_40x101.png",
-        // anchor: [0.5, 1],
-        imgSize: [40, 101],
         scale: 0.6,
       }),
       text: new ol.style.Text({
@@ -173,6 +169,8 @@ function addTreeMarkers() {
       features: treeFeatures,
     }),
     style: getTreeStyle,
+    // Openlayers 9.0.0 bug fix to add this class - unused otherwise
+    className:"gojiVectors",
   });
 
   NewTree.layer = new ol.layer.Vector({
@@ -202,11 +200,6 @@ function addTreeMarkers() {
 
   resetMapPosition();
   setupMapEvents();
-  // scrollInfoPanelUp();
-  // if (isMobile()) {
-  //   document.getElementById("basicTutorial").innerHTML =
-  //     "Scroll up to view the map. Select a goji for more information or use the menu to:";
-  // }
 
   // hide the loading screen
   document.getElementById("loading-screen").style.display = "none";
