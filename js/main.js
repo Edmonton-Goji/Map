@@ -184,6 +184,8 @@ function addTreeMarkers() {
         width: 2,
       }),
     }),
+    // Openlayers 9.0.0 bug fix to add this class - unused otherwise
+    className:"newGojiVectors",
   });
 
   // Set up the map
@@ -390,17 +392,8 @@ function showTreeInfo(feature) {
         carouselInner.appendChild(item);
       });
 
-      const carouselNextBtn = document.querySelector(".carousel-control-next");
-      const carouselPrevBtn = document.querySelector(".carousel-control-prev");
-      if (photos.length === 1) {
-        carouselIndicators.style.display = "none";
-        carouselNextBtn.style.display = "none";
-        carouselPrevBtn.style.display = "none";
-      } else {
-        carouselIndicators.style.display = "";
-        carouselNextBtn.style.display = "";
-        carouselPrevBtn.style.display = "";
-      }
+      // show carousel controls if there are multiple images
+      toggleCarouselControls(photos.length > 1);
 
       // Click to Fullscreen images
       if (document.fullscreenEnabled) {
@@ -436,6 +429,17 @@ function resetCarousel() {
   carouselIndicators.innerHTML = "";
   const carouselInner = document.querySelector(".carousel-inner");
   carouselInner.innerHTML = "";
+}
+
+function toggleCarouselControls(show) {
+  const carouselIndicators = document.querySelector(".carousel-indicators");
+  const carouselNextBtn = document.querySelector(".carousel-control-next");
+  const carouselPrevBtn = document.querySelector(".carousel-control-prev");
+  const displayStyle = show ? "" : "none";
+  
+  carouselNextBtn.style.display = displayStyle;
+  carouselPrevBtn.style.display = displayStyle;
+  carouselIndicators.style.display = displayStyle;
 }
 
 function selectTree(treeId) {
@@ -778,9 +782,6 @@ function clearSelectedLocation() {
 }
 
 // hide carousel controls by default
-const carouselNextBtn = document.querySelector(".carousel-control-next");
-const carouselPrevBtn = document.querySelector(".carousel-control-prev");
-carouselNextBtn.style.display = "none";
-carouselPrevBtn.style.display = "none";
+toggleCarouselControls(false);
 
 fetchTreeRecords();
