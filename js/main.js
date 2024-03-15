@@ -170,7 +170,7 @@ function addTreeMarkers() {
     }),
     style: getTreeStyle,
     // Openlayers 9.0.0 bug fix to add this class - unused otherwise
-    className:"gojiVectors",
+    className: "gojiVectors",
   });
 
   NewTree.layer = new ol.layer.Vector({
@@ -185,7 +185,7 @@ function addTreeMarkers() {
       }),
     }),
     // Openlayers 9.0.0 bug fix to add this class - unused otherwise
-    className:"newGojiVectors",
+    className: "newGojiVectors",
   });
 
   // Set up the map
@@ -344,7 +344,9 @@ function showTreeInfo(feature) {
     if (useExactLocation(feature)) {
       html += `<p><strong>Address:</strong> ${feature.get("Address")}</p>`;
     } else {
-      html += `<p><strong>Neighbourhood:</strong> ${feature.get("Neighbourhood Text")}</p>`;
+      html += `<p><strong>Neighbourhood:</strong> ${feature.get(
+        "Neighbourhood Text"
+      )}</p>`;
     }
 
     displayFields.forEach(function (field) {
@@ -353,7 +355,10 @@ function showTreeInfo(feature) {
         if (field.slice(-3) === "(m)") {
           // convert meters to feet
           const measureFeet = (fieldValue * 3.28084).toFixed(2);
-          html += `<p><strong>${field.slice(0,-4)}:</strong> ${fieldValue.toFixed(2)}m (${measureFeet} ft)</p>`;
+          html += `<p><strong>${field.slice(
+            0,
+            -4
+          )}:</strong> ${fieldValue.toFixed(2)}m (${measureFeet} ft)</p>`;
         } else {
           html += `<p><strong>${field}:</strong> ${fieldValue}</p>`;
         }
@@ -441,7 +446,7 @@ function toggleCarouselControls(show) {
   const carouselNextBtn = document.querySelector(".carousel-control-next");
   const carouselPrevBtn = document.querySelector(".carousel-control-prev");
   const displayStyle = show ? "" : "none";
-  
+
   carouselNextBtn.style.display = displayStyle;
   carouselPrevBtn.style.display = displayStyle;
   carouselIndicators.style.display = displayStyle;
